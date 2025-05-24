@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>All Data </title>
 </head>
 <body>
-    <form action="">
-         <p>Name: <%= result.name %></p>
-        <p>Age: <%= result.age %></p>
-        <p>Degree: <%= result.degree %></p>
-        <p>Contact: <%= result.contact %></p>
-        <p>Recent: <%= result.recent %></p>
-    </form>
+    <% for(let items of data){ %>
+        <ul>
+            <li>
+                <a href="/show/<%=items.id %>"><%= items.name %></a>
+            </li>
+        </ul>
+        
+        <% } %>
 </body>
 </html>

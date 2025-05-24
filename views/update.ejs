@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/new/<%= data._id %>?_method=PUT" method="post">
+    <input type="text" name="name" value="<%= data.name %>">
+    <input type="number" name="age" value="<%= data.age %>">
+    <input type="text" name="degree" value="<%= data.degree %>">
+    <input type="text" name="recent" value="<%= data.recent %>">
+    <input type="text" name="contact" value="<%= data.contact %>">
+    <button type="submit">Edit Changes</button>
+</form>
+</body>
+</html>

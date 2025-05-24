@@ -3,6 +3,8 @@ const path = require("path");
 const app = express();
 const mongoose = require('mongoose');
 const Profile = require("./db.js");
+const methodOverride = require("method-override");
+
 
 
 
@@ -24,24 +26,20 @@ async function main() {
   // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }
 
+
 app.set("view engine", "ejs");
 app.use(express.urlencoded({extended: true}))
-app.use(express.static(path.join(__dirname, "public")))
-
-// Root route
-app.get("/home", (req , res)=>{
-    console.log("Root request is working ")
-    res.send("Root is working")
-})
+app.use(express.static(path.join(__dirname, "public")));
+app.use(methodOverride("_method"));
 
 // Create Route
-app.get("/create", (req , res)=>{
+app.get("/", (req , res)=>{
     res.render("home.ejs")
 })
 
-app.post("/new", async (req, res)=>{
-    let {name , age , degree , contact , recent}= req.body;
-    const data =  new Profile({
+app.post("/create", async(req , res)=>{
+    let {name, age, degree, contact, recent} = req.body;
+    let data = new Profile({
         name : name,
         age : age,
         degree : degree,
@@ -49,14 +47,40 @@ app.post("/new", async (req, res)=>{
         recent : recent
 
     })
-    let result = await data.save();
-    console.log(result);
-    res.render("show.ejs", {result})
-
+      await data.save();
+      res.redirect("/alldata")
+    
+   
 })
 
-app.get("/shows", async(req , res)=>{
-    let Profiles = await Profile.find();
-    res.render("allprofile.ejs", {Profiles})
+// Show All data
+app.get("/alldata" , async(req , res)=>{
+    let data = await Profile.find();
+    res.render("show.ejs", {data})
 })
 
+// Show Specific data
+app.get("/show/:id", async (req , res)=>{
+    let {id} = req.params;
+    let data = await Profile.findById(id);
+    res.render("singleshow.ejs", {data});
+})
+
+// Update Route
+app.get("/update/:id", async(req, res)=>{
+    let {id}= req.params;
+    let data = await Profile.findById(id);
+    res.render("update.ejs", {data})
+})
+
+app.put("/new/:id", async (req , res)=>{
+    let {id} = req.params;
+    await Profile.findByIdAndUpdate(id , {...req.body});
+    res.redirect(`/show/${id}`)
+})
+
+app.delete("/delete/:id", async(req, res)=>{
+    let {id}= req.params;
+    await Profile.findByIdAndDelete(id);
+    res.redirect("/alldata")
+})
